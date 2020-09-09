@@ -31,7 +31,7 @@ var child_process = require('child_process');
  *
  */
 var ifconfig = module.exports = {
-  exec: child_process.exec,
+  execFile: child_process.execFile,
   status: status,
   down: down,
   up: up
@@ -189,10 +189,10 @@ function parse_status_interface(callback) {
  */
 function status(interface, callback) {
   if (callback) {
-    this.exec('ifconfig ' + interface, parse_status_interface(callback));  
+    this.execFile('ifconfig', [interface], parse_status_interface(callback));  
   }
   else {
-    this.exec('ifconfig -a', parse_status(interface));  
+    this.execFile('ifconfig', ['-a', parse_status(interface)]);  
   }
 }
 
@@ -214,7 +214,7 @@ function status(interface, callback) {
  *
  */
 function down(interface, callback) {
-  return this.exec('ifconfig ' + interface + ' down', callback);
+  return this.execFile('ifconfig',  [interface, 'down'], callback);
 }
 
 /**
@@ -241,9 +241,5 @@ function down(interface, callback) {
  *
  */
 function up(options, callback) {
-  return this.exec('ifconfig ' + options.interface +
-    ' ' + options.ipv4_address +
-    ' netmask ' + options.ipv4_subnet_mask +
-    ' broadcast ' + options.ipv4_broadcast +
-    ' up', callback);
+  return this.execFile('ifconfig', [options.interface, options.ipv4_address, 'netmask', options.ipv4_subnet_mask, 'broadcast', options.ipv4_broadcast, 'up'], callback);
 }
